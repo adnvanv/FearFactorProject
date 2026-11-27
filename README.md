@@ -113,22 +113,6 @@ npm run build:public             # -> app/frontend/dist/
 
 Copy everything in `app/frontend/dist/` to the server's web folder (it works from any URL path). To preview locally: `python -m http.server 4173 --directory app/frontend/dist`.
 
-#### Hosting on the OptiPlex
-
-`bash app/deploy_public.sh` (run in Git Bash) builds the public site, copies it to `~/fsmt-site` on the `boward` host, and runs it as a user service (`fsmt-site`, no sudo needed) on the machine's Tailscale address, port 8090. It is private to your tailnet until you publish it.
-
-To make it public later through the existing Cloudflare Tunnel (`truecountlab`), on the OptiPlex:
-
-1. In `~/.cloudflared/config.yml`, add a rule **above** the final catch-all `- service: http_status:404` line:
-   ```yaml
-     - hostname: fsmt.truecountlab.com
-       service: http://100.85.72.107:8090
-   ```
-2. `cloudflared tunnel route dns truecountlab fsmt.truecountlab.com`
-3. `systemctl --user restart cloudflared`
-
-Only the static results site is exposed this way; nothing can run models or reach a database.
-
 
 ## Example Inputs and Outputs for V1
 
