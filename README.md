@@ -101,6 +101,18 @@ npm run dev                              # open http://localhost:5173
 
 v2 on a CPU takes about 3 seconds per post; a GPU is much faster. Set `FSMT_V2_MODEL` to use a different or local zero-shot model.
 
+### Public, view-only website
+
+For hosting publicly there is a separate build that only **shows results**: the Evaluation page and the MILDEC results. It has no Analyze page, no SQL access and no Python backend (the Analyze code is not even included in the bundle). It is plain static files, so any web server can host it, with no models needed on the server.
+
+```
+python app/export_static.py      # refresh app/frontend/public/data/*.json from the latest results
+cd app/frontend
+npm run build:public             # -> app/frontend/dist/
+```
+
+Copy everything in `app/frontend/dist/` to the server's web folder (it works from any URL path). To preview locally: `python -m http.server 4173 --directory app/frontend/dist`.
+
 
 ## Example Inputs and Outputs for V1
 
