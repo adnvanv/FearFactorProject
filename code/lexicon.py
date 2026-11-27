@@ -1,3 +1,5 @@
+import re
+
 # Expanded Fear/Stress/Morale/Trust lexicon
 # format = (fear, stress, morale, trust)
 # Positive values for fear/stress increase those dimensions.
@@ -288,15 +290,13 @@ LEXICON = {
     "war ended": (-0.5, -0.6, 1.0, 0.8),
     "peace restored": (-0.4, -0.5, 1.0, 0.8),
     "hostilities ended": (-0.4, -0.5, 1.0, 0.7),
-    "ceasefire": (-0.4, -0.5, 0.8, 0.7),
-    "truce": (-0.3, -0.4, 0.7, 0.7),
-    "armistice": (-0.3, -0.4, 0.7, 0.7),
-    "peaceful": (-0.4, -0.5, 0.9, 0.8),
-    "negotiation": (-0.2, -0.3, 0.6, 0.7),
-    "negotiations": (-0.2, -0.3, 0.6, 0.7),
-    "diplomacy": (-0.2, -0.2, 0.6, 0.7),
-    "de-escalation": (-0.4, -0.5, 0.8, 0.7)
 }
+
+# Keys are matched case-insensitively.
+LEXICON = {key.lower(): value for key, value in LEXICON.items()}
+
+_WORD_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+_MAX_PHRASE_LEN = max(len(key.split()) for key in LEXICON)
 
 
 def get_lexicon():
@@ -305,3 +305,25 @@ def get_lexicon():
     Values are approximate heuristics and may need tuning for your domain.
     """
     return LEXICON
+
+
+def find_hits(text: str):
+    """Return [(term, (fear, stress, morale, trust)), ...] for lexicon terms in text.
+
+    Matching ignores case and punctuation ("Attack!" matches "attack") and
+    prefers the longest phrase, so "war ended" is counted once rather than
+    being missed by a plain word-by-word lookup.
+    """
+    words = _WORD_RE.findall(str(text).lower())
+    hits = []
+    i = 0
+    while i < len(words):
+        for n in range(min(_MAX_PHRASE_LEN, len(words) - i), 0, -1):
+            term = " ".join(words[i : i + n])
+            if term in LEXICON:
+                hits.append((term, LEXICON[term]))
+                i += n
+                break
+        else:
+            i += 1
+    return hits

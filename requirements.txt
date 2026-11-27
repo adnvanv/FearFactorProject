@@ -1,0 +1,11 @@
+# Core (stable-v1 and v2_NLU)
+torch
+transformers>=4.40
+pandas
+datasets
+
+# Notebooks in code/ and v2_NLU/
+nltk
+matplotlib
+seaborn
+jupyter

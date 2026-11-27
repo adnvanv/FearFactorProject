@@ -8,17 +8,51 @@ The USC approach is to use large-scale multiagent systems (thousands of agents) 
 
 A natural language parser is needed to assess short documents for their impact on a reader regarding fear, stress, morale, and trust in authorities. For example, a document (news report or social media post) stating that an invasion or a flood is imminent might induce fear, or that there is a food shortage might lower morale. It would be sufficient to produce a value for each document/post in the range from 1 - 3 for each of the factors fear, stress, morale, and trust.
 
-## My Progress
-Currently, I have some python notebook (ipynb) files in the code folder, each representing a different method of trying to tackle this problem. I have created a [stable-v1](./stable-v1) folder which will which includes a working version of my initial attempts.
+## Repository layout
 
-I have recently finished a more resource heavy method which is very accurate that I will upload instructions for soon
+| Path | What it is |
+| --- | --- |
+| [stable-v1/](./stable-v1) | Lightweight, CPU-friendly analyzer: an emotion classifier whose scores are mapped to 1–3 levels. See [HowToUse.md](./stable-v1/HowToUse.md). |
+| [v2_NLU/](./v2_NLU) | More accurate zero-shot NLI analyzer (`facebook/bart-large-mnli`). GPU recommended. |
+| [code/](./code) | Experimental notebooks (lexicon + VADER, emotion detection, Flan-T5 prompting, results analysis). |
+| [data/](./data) | MILDEC sample posts and the outputs of v1 (`*_analyzed.csv`) and v2 (`*_nlu.csv`). |
 
-## V2 NLU Usage
-NOTE: This version uses a large model and is recommended to be run on a GPU
+## Setup
 
-Download the nlu.py file
+Python 3.10+ is recommended.
 
-run: python nlu.py pathToCSV --ouput results.csv
+```
+pip install -r requirements.txt
+```
+
+Model weights are downloaded from Hugging Face the first time each script runs.
+
+## V1 usage (emotion classifier)
+
+```
+cd stable-v1
+python emotion_analyzer.py "Drones are descending on the city!"   # one text
+python emotion_analyzer.py                                         # interactive prompt
+python csvAnalyzer.py ../data/MILDEC_short_out.csv --column text   # whole CSV
+```
+
+The CSV analyzer writes `<input>_analyzed.csv` with `Fear Level`, `Stress Level`, `Morale Level` and `Trust Level` columns (1–3).
+
+## V2 usage (zero-shot NLU)
+
+NOTE: This version uses a large model and is recommended to be run on a GPU.
+
+```
+python v2_NLU/nlu.py data/MILDEC_short_out.csv --output results.csv
+```
+
+Options: `--column` (text column, default `text`), `--model` (Hugging Face id or a local folder such as `./code/bartLargeMnli`), `--batch-size` (lower it if you run out of GPU memory).
+
+Each dimension gets two columns:
+- `val_<dim>`: P(high) − P(low), from −1 to 1. Higher always means *more* of that dimension (more fear, more stress, higher morale, more trust).
+- `level_<dim>`: the same score bucketed into 1–3 (≤ −⅓ → 1, ≥ ⅓ → 3, otherwise 2).
+
+Blank text rows are skipped and left empty in the output.
 
 
 ## Example Inputs and Outputs for V1
