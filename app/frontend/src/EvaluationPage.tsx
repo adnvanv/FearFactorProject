@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { api, DIM_LABEL, type Evaluation } from './api'
+import { api, DIM_LABEL, PUBLIC, type Evaluation } from './api'
 import { MirroredHistogram } from './charts'
 
 const HIGH_LOW: Record<string, [string, string]> = {
@@ -38,7 +38,12 @@ export default function EvaluationPage() {
     return out
   }, [behavior])
 
-  if (error) return <div className="error">Could not load results: {error}. Is the API running on port 8000?</div>
+  if (error)
+    return (
+      <div className="error">
+        Could not load results: {error}.{PUBLIC ? '' : ' Is the API running on port 8000?'}
+      </div>
+    )
   if (!data) return <p className="muted">Loading results…</p>
 
   const passed = behavior.filter((r) => r.passed).length

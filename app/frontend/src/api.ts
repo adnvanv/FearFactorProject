@@ -64,10 +64,15 @@ export interface ModelInfo {
   scale: string
 }
 
+/** Public, view-only build: reads exported JSON instead of calling the Python API. */
+export const PUBLIC = import.meta.env.VITE_PUBLIC === '1'
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, init)
-  const body = await res.json().catch(() => ({}))
-  if (!res.ok) throw new Error(body.detail ?? `Request failed (${res.status})`)
+  const body = await res.json().catch(() => undefined)
+  if (!res.ok) throw new Error(body?.detail ?? `Request failed (${res.status})`)
+  // e.g. a web server answering with an HTML page instead of the data file
+  if (body === undefined) throw new Error(`Unexpected response from ${path}`)
   return body as T
 }
 
@@ -78,7 +83,13 @@ const json = (body: unknown): RequestInit => ({
 })
 
 export const api = {
-  evaluation: () => request<Evaluation>('/api/evaluation'),
+  evaluation: () => request<Evaluation>(PUBLIC ? 'data/evaluation.json' : '/api/evaluation'),
+  /** Precomputed v2 scores for the MILDEC posts (static file, works with or without the API). */
+  mildecResults: () => request<JobResults>('data/mildec_results.json'),
+}
+
+/** Calls that need the Python API (Analyze page only; not used by the public build). */
+export const analyzeApi = {
   models: () => request<Record<string, ModelInfo>>('/api/models'),
   sqlTables: (url: string) =>
     request<{ tables: { name: string; columns: string[] }[] }>('/api/sql/tables', json({ url })),

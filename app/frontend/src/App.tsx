@@ -1,14 +1,30 @@
-import { useEffect, useState } from 'react'
-import AnalyzePage from './AnalyzePage'
+import { lazy, Suspense, useEffect, useState } from 'react'
+import { PUBLIC } from './api'
 import EvaluationPage from './EvaluationPage'
+import MildecPage from './MildecPage'
 
-type Tab = 'evaluation' | 'analyze'
+type Tab = 'evaluation' | 'mildec' | 'analyze'
+
+// Loaded on demand, and left out of the public build entirely.
+const AnalyzePage = import.meta.env.VITE_PUBLIC === '1' ? null : lazy(() => import('./AnalyzePage'))
+
+// The public build is view-only: no Analyze page (it needs the Python API and models).
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'evaluation', label: 'Evaluation' },
+  { id: 'mildec', label: 'MILDEC results' },
+  ...(PUBLIC ? [] : [{ id: 'analyze' as Tab, label: 'Analyze data' }]),
+]
+
+function tabFromHash(): Tab {
+  const id = location.hash.slice(1)
+  return TABS.find((t) => t.id === id)?.id ?? 'evaluation'
+}
 
 export default function App() {
-  const [tab, setTab] = useState<Tab>(() => (location.hash === '#analyze' ? 'analyze' : 'evaluation'))
+  const [tab, setTab] = useState<Tab>(tabFromHash)
 
   useEffect(() => {
-    const onHash = () => setTab(location.hash === '#analyze' ? 'analyze' : 'evaluation')
+    const onHash = () => setTab(tabFromHash())
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
@@ -26,15 +42,22 @@ export default function App() {
           <div className="sub">Fear · Stress · Morale · Trust from text</div>
         </div>
         <nav className="tabs" role="tablist">
-          <button className="tab" role="tab" aria-selected={tab === 'evaluation'} onClick={() => go('evaluation')}>
-            Evaluation
-          </button>
-          <button className="tab" role="tab" aria-selected={tab === 'analyze'} onClick={() => go('analyze')}>
-            Analyze data
-          </button>
+          {TABS.map((t) => (
+            <button key={t.id} className="tab" role="tab" aria-selected={tab === t.id} onClick={() => go(t.id)}>
+              {t.label}
+            </button>
+          ))}
         </nav>
       </header>
-      <main>{tab === 'evaluation' ? <EvaluationPage /> : <AnalyzePage />}</main>
+      <main>
+        {tab === 'evaluation' && <EvaluationPage />}
+        {tab === 'mildec' && <MildecPage />}
+        {tab === 'analyze' && AnalyzePage && (
+          <Suspense fallback={<p className="muted">Loading…</p>}>
+            <AnalyzePage />
+          </Suspense>
+        )}
+      </main>
     </>
   )
 }
