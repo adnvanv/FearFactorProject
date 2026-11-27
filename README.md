@@ -8,17 +8,98 @@ The USC approach is to use large-scale multiagent systems (thousands of agents) 
 
 A natural language parser is needed to assess short documents for their impact on a reader regarding fear, stress, morale, and trust in authorities. For example, a document (news report or social media post) stating that an invasion or a flood is imminent might induce fear, or that there is a food shortage might lower morale. It would be sufficient to produce a value for each document/post in the range from 1 - 3 for each of the factors fear, stress, morale, and trust.
 
-## My Progress
-Currently, I have some python notebook (ipynb) files in the code folder, each representing a different method of trying to tackle this problem. I have created a [stable-v1](./stable-v1) folder which will which includes a working version of my initial attempts.
+## Repository layout
 
-I have recently finished a more resource heavy method which is very accurate that I will upload instructions for soon
+| Path | What it is |
+| --- | --- |
+| [stable-v1/](./stable-v1) | Lightweight, CPU-friendly analyzer: an emotion classifier whose scores are mapped to 1–3 levels. See [HowToUse.md](./stable-v1/HowToUse.md). |
+| [v2_NLU/](./v2_NLU) | More accurate zero-shot NLI analyzer (`facebook/bart-large-mnli`). GPU recommended. |
+| [code/](./code) | Experimental notebooks (lexicon + VADER, emotion detection, Flan-T5 prompting, results analysis). |
+| [data/](./data) | MILDEC sample posts and the outputs of v1 (`*_analyzed.csv`) and v2 (`*_nlu.csv`). |
+| [evaluation/](./evaluation) | Accuracy checks for v2: public human-labeled datasets and behavior tests. |
+| [app/](./app) | Web app: React frontend + Python API for viewing results and scoring data from SQL or CSV. |
 
-## V2 NLU Usage
-NOTE: This version uses a large model and is recommended to be run on a GPU
+## Setup
 
-Download the nlu.py file
+Python 3.10+ is recommended.
 
-run: python nlu.py pathToCSV --ouput results.csv
+```
+pip install -r requirements.txt
+```
+
+Model weights are downloaded from Hugging Face the first time each script runs.
+
+## V1 usage (emotion classifier)
+
+```
+cd stable-v1
+python emotion_analyzer.py "Drones are descending on the city!"   # one text
+python emotion_analyzer.py                                         # interactive prompt
+python csvAnalyzer.py ../data/MILDEC_short_out.csv --column text   # whole CSV
+```
+
+The CSV analyzer writes `<input>_analyzed.csv` with `Fear Level`, `Stress Level`, `Morale Level` and `Trust Level` columns (1–3).
+
+## V2 usage (zero-shot NLU)
+
+NOTE: This version uses a large model and is recommended to be run on a GPU.
+
+```
+python v2_NLU/nlu.py data/MILDEC_short_out.csv --output results.csv
+```
+
+Options: `--column` (text column, default `text`), `--model` (Hugging Face id or a local folder such as `./code/bartLargeMnli`), `--batch-size` (lower it if you run out of GPU memory).
+
+Each dimension gets two columns:
+- `val_<dim>`: P(high) − P(low), from −1 to 1. Higher always means *more* of that dimension (more fear, more stress, higher morale, more trust).
+- `level_<dim>`: the same score bucketed into 1–3 (≤ −⅓ → 1, ≥ ⅓ → 3, otherwise 2).
+
+Blank text rows are skipped and left empty in the output.
+
+## How accurate is v2?
+
+Measured without hand-labeling, in [evaluation/](./evaluation) (results in `evaluation/results/`).
+
+**1. Public datasets labeled by people.** AUC = given one high and one low example, how often v2 scores the high one higher (0.5 = coin flip, 1.0 = perfect).
+
+| Factor | Dataset (human labels) | AUC |
+| --- | --- | --- |
+| Fear | GoEmotions: Reddit comments, fear/nervousness vs. neither | **0.79** |
+| Stress | Dreaddit: Reddit posts, stressed vs. not stressed | **0.84** |
+| Morale | TweetEval: tweets, optimism vs. sadness | **0.91** |
+| Trust | no public dataset (covered by the behavior tests) | — |
+
+v2 ranks texts well, but its scores run slightly positive, so 0 is not the best cutoff between "high" and "low" (the app shows the best cutoff for each factor).
+
+**2. Behavior tests.** 34 sentence pairs for this scenario where one should clearly score higher (threat vs. benign, "not", rumor vs. confirmed, resolved vs. ongoing…). v2 passes **33/34**, including 8/8 for trust. The one miss: "officials confirm troops crossed the border" did not score more fearful than "an unverified rumor says they might".
+
+```
+python evaluation/behavior_tests.py
+python evaluation/public_datasets.py --per-class 200
+```
+
+## Web app
+
+A React frontend and Python API in [app/](./app):
+
+- **Evaluation**: the accuracy results above, with charts.
+- **Analyze data**: load posts from a SQL database (SQLite, Postgres, MySQL, SQL Server via a SQLAlchemy URL) or a CSV, score them with v1 or v2, see distributions and averages over time (e.g. by `tick`), download a CSV, or save the scores back as a new table. Queries are read-only (a single SELECT, rolled back).
+
+Run it (two terminals, from the repo root):
+
+```
+pip install -r requirements.txt
+python app/demo/make_demo_db.py          # optional: SQLite copy of the MILDEC data
+uvicorn app.backend.main:app --port 8000
+```
+
+```
+cd app/frontend
+npm install
+npm run dev                              # open http://localhost:5173
+```
+
+v2 on a CPU takes about 3 seconds per post; a GPU is much faster. Set `FSMT_V2_MODEL` to use a different or local zero-shot model.
 
 
 ## Example Inputs and Outputs for V1

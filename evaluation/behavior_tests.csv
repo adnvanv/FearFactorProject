@@ -1,0 +1,35 @@
+dimension,category,higher,lower
+fear,threat vs. benign,Drones attacked Killeen Regional Airport this morning.,Drones delivered medical supplies to Killeen Regional Airport this morning.
+fear,threat vs. benign,Armed soldiers are going door to door in Temple searching homes.,Soldiers are handing out water bottles at the Temple community center.
+fear,threat vs. benign,An explosion destroyed the power plant and officials fear more attacks.,The power plant finished scheduled maintenance ahead of time.
+fear,negation,Enemy forces are advancing toward the city.,Enemy forces are not advancing toward the city.
+fear,negation,There is a real threat of an attack tonight.,There is no threat of an attack tonight.
+fear,certainty,Officials confirm Donovian troops have crossed the border.,An unverified rumor claims Donovian troops might cross the border someday.
+fear,intensity,Missiles are striking neighborhoods and people are fleeing in terror.,A few people reported hearing a loud noise near the base.
+fear,resolution,The attackers are still at large and may strike again.,The attackers have been captured and the area is secure.
+fear,resolution,The flood is rising and is expected to reach homes within the hour.,The flood waters have receded and residents are returning home.
+fear,headline style,BREAKING: Gunfire reported downtown. Stay indoors.,Local bakery wins award for best pie in Texas.
+stress,threat vs. benign,Hospitals are overwhelmed and doctors have not slept in three days.,Hospitals report a quiet week with plenty of open beds.
+stress,threat vs. benign,"No power, no water, and the stores are empty. I don't know how we will feed the kids.",The weather is nice and the kids are playing outside after school.
+stress,negation,Families are struggling to find enough food.,Families are not struggling to find enough food.
+stress,certainty,Officials confirm fuel will run out by Friday.,Some people online are guessing fuel prices could change next year.
+stress,intensity,Everything is falling apart and I can't cope anymore.,Work was a little busy today but it was fine.
+stress,resolution,The water supply has been cut off with no restoration date.,The water supply has been fully restored to all neighborhoods.
+stress,resolution,Thousands are stuck in traffic trying to evacuate before the storm.,The evacuation went smoothly and everyone reached the shelters.
+stress,headline style,Residents scramble as shortages and blackouts spread across Killeen.,Residents enjoy the annual summer festival in Killeen.
+morale,good vs. bad news,Our troops pushed back the enemy and the town is celebrating.,Our troops were defeated and the town has been abandoned.
+morale,good vs. bad news,Relief convoys arrived and families finally have food again.,The relief convoys never came and families are giving up hope.
+morale,negation,We are going to get through this together.,We are not going to get through this.
+morale,certainty,Officials confirm the ceasefire is holding and peace talks are progressing.,Rumors say the ceasefire probably failed and talks are over.
+morale,intensity,Volunteers are rebuilding the school and everyone feels hopeful about the future.,Nobody bothered to show up and the school is still in ruins.
+morale,resolution,Power is back on and the community is rebuilding stronger than before.,Power has been out for weeks and nobody is coming to help.
+morale,headline style,Victory! Local heroes rescue 50 families from the flood.,Defeat: 50 families lost everything and rescuers gave up.
+morale,personal,I'm proud of my neighbors. We will rebuild.,I feel hopeless. There's no point in trying anymore.
+trust,honest vs. cover-up,City officials held a press conference and shared all the evidence about the attack.,City officials are hiding what really happened in the attack.
+trust,honest vs. cover-up,The mayor kept every promise and delivered aid on schedule.,The mayor lied about the aid and kept the money for himself.
+trust,honest vs. cover-up,The military explained the drone flights in advance and answered every question.,The military secretly flew drones over our homes and denied it.
+trust,negation,Our leaders are telling us the truth.,Our leaders are not telling us the truth.
+trust,certainty,Independent investigators verified the government's report.,Anonymous posts claim the government's report was fabricated.
+trust,intensity,I fully trust the police and the National Guard to keep us safe.,The police and the National Guard abandoned us when we needed them.
+trust,corruption,Officials were cleared after a transparent public audit.,Officials were arrested for taking bribes from Donovian agents.
+trust,alliance,NATO forces coordinated with local leaders and kept residents informed.,NATO forces ignored local leaders and lied to residents about their plans.

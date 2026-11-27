@@ -4,13 +4,20 @@ __pycache__/
 
 # Environments
 venv/
+.venv/
 .env/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
 
 # Large data and results
 *.jsonl
 analysis_results.txt
+simulation_results.csv
 
-
-# HuggingFace/Transformers cache
+# HuggingFace/Transformers cache and local model copies
 .cache/
 code/bartLargeMnli/
+
+# Web app
+app/demo/*.db

@@ -1,0 +1,35 @@
+dimension,category,higher,lower,score_higher,score_lower,gap,passed
+fear,threat vs. benign,Drones attacked Killeen Regional Airport this morning.,Drones delivered medical supplies to Killeen Regional Airport this morning.,0.275,-0.056,0.331,True
+fear,threat vs. benign,Armed soldiers are going door to door in Temple searching homes.,Soldiers are handing out water bottles at the Temple community center.,0.239,-0.012,0.251,True
+fear,threat vs. benign,An explosion destroyed the power plant and officials fear more attacks.,The power plant finished scheduled maintenance ahead of time.,0.213,-0.13,0.343,True
+fear,negation,Enemy forces are advancing toward the city.,Enemy forces are not advancing toward the city.,0.398,-0.446,0.844,True
+fear,negation,There is a real threat of an attack tonight.,There is no threat of an attack tonight.,0.333,-0.498,0.831,True
+fear,certainty,Officials confirm Donovian troops have crossed the border.,An unverified rumor claims Donovian troops might cross the border someday.,0.115,0.135,-0.02,False
+fear,intensity,Missiles are striking neighborhoods and people are fleeing in terror.,A few people reported hearing a loud noise near the base.,0.906,0.088,0.818,True
+fear,resolution,The attackers are still at large and may strike again.,The attackers have been captured and the area is secure.,0.328,-0.64,0.968,True
+fear,resolution,The flood is rising and is expected to reach homes within the hour.,The flood waters have receded and residents are returning home.,0.391,-0.239,0.63,True
+fear,headline style,BREAKING: Gunfire reported downtown. Stay indoors.,Local bakery wins award for best pie in Texas.,0.401,-0.057,0.458,True
+stress,threat vs. benign,Hospitals are overwhelmed and doctors have not slept in three days.,Hospitals report a quiet week with plenty of open beds.,0.194,-0.884,1.078,True
+stress,threat vs. benign,"No power, no water, and the stores are empty. I don't know how we will feed the kids.",The weather is nice and the kids are playing outside after school.,0.499,-0.786,1.285,True
+stress,negation,Families are struggling to find enough food.,Families are not struggling to find enough food.,0.37,-0.726,1.096,True
+stress,certainty,Officials confirm fuel will run out by Friday.,Some people online are guessing fuel prices could change next year.,0.19,0.097,0.093,True
+stress,intensity,Everything is falling apart and I can't cope anymore.,Work was a little busy today but it was fine.,0.669,-0.208,0.877,True
+stress,resolution,The water supply has been cut off with no restoration date.,The water supply has been fully restored to all neighborhoods.,0.333,-0.304,0.637,True
+stress,resolution,Thousands are stuck in traffic trying to evacuate before the storm.,The evacuation went smoothly and everyone reached the shelters.,0.152,-0.703,0.855,True
+stress,headline style,Residents scramble as shortages and blackouts spread across Killeen.,Residents enjoy the annual summer festival in Killeen.,0.252,-0.365,0.617,True
+morale,good vs. bad news,Our troops pushed back the enemy and the town is celebrating.,Our troops were defeated and the town has been abandoned.,0.971,-0.702,1.673,True
+morale,good vs. bad news,Relief convoys arrived and families finally have food again.,The relief convoys never came and families are giving up hope.,0.852,-0.88,1.732,True
+morale,negation,We are going to get through this together.,We are not going to get through this.,0.828,-0.685,1.513,True
+morale,certainty,Officials confirm the ceasefire is holding and peace talks are progressing.,Rumors say the ceasefire probably failed and talks are over.,0.731,-0.383,1.114,True
+morale,intensity,Volunteers are rebuilding the school and everyone feels hopeful about the future.,Nobody bothered to show up and the school is still in ruins.,0.948,-0.434,1.382,True
+morale,resolution,Power is back on and the community is rebuilding stronger than before.,Power has been out for weeks and nobody is coming to help.,0.935,-0.504,1.439,True
+morale,headline style,Victory! Local heroes rescue 50 families from the flood.,Defeat: 50 families lost everything and rescuers gave up.,0.918,-0.742,1.66,True
+morale,personal,I'm proud of my neighbors. We will rebuild.,I feel hopeless. There's no point in trying anymore.,0.922,-0.504,1.426,True
+trust,honest vs. cover-up,City officials held a press conference and shared all the evidence about the attack.,City officials are hiding what really happened in the attack.,0.203,-0.284,0.487,True
+trust,honest vs. cover-up,The mayor kept every promise and delivered aid on schedule.,The mayor lied about the aid and kept the money for himself.,0.871,-0.371,1.242,True
+trust,honest vs. cover-up,The military explained the drone flights in advance and answered every question.,The military secretly flew drones over our homes and denied it.,0.689,-0.127,0.816,True
+trust,negation,Our leaders are telling us the truth.,Our leaders are not telling us the truth.,0.912,-0.458,1.37,True
+trust,certainty,Independent investigators verified the government's report.,Anonymous posts claim the government's report was fabricated.,0.441,-0.232,0.673,True
+trust,intensity,I fully trust the police and the National Guard to keep us safe.,The police and the National Guard abandoned us when we needed them.,0.861,-0.468,1.329,True
+trust,corruption,Officials were cleared after a transparent public audit.,Officials were arrested for taking bribes from Donovian agents.,0.484,-0.203,0.687,True
+trust,alliance,NATO forces coordinated with local leaders and kept residents informed.,NATO forces ignored local leaders and lied to residents about their plans.,0.773,-0.402,1.175,True

@@ -1,0 +1,82 @@
+{
+  "model": "facebook/bart-large-mnli",
+  "date": "2026-11-27",
+  "overall": {
+    "passed": 33,
+    "total": 34
+  },
+  "by_dimension": {
+    "fear": {
+      "passed": 9,
+      "total": 10
+    },
+    "morale": {
+      "passed": 8,
+      "total": 8
+    },
+    "stress": {
+      "passed": 8,
+      "total": 8
+    },
+    "trust": {
+      "passed": 8,
+      "total": 8
+    }
+  },
+  "by_category": {
+    "alliance": {
+      "passed": 1,
+      "total": 1
+    },
+    "certainty": {
+      "passed": 3,
+      "total": 4
+    },
+    "corruption": {
+      "passed": 1,
+      "total": 1
+    },
+    "good vs. bad news": {
+      "passed": 2,
+      "total": 2
+    },
+    "headline style": {
+      "passed": 3,
+      "total": 3
+    },
+    "honest vs. cover-up": {
+      "passed": 3,
+      "total": 3
+    },
+    "intensity": {
+      "passed": 4,
+      "total": 4
+    },
+    "negation": {
+      "passed": 5,
+      "total": 5
+    },
+    "personal": {
+      "passed": 1,
+      "total": 1
+    },
+    "resolution": {
+      "passed": 5,
+      "total": 5
+    },
+    "threat vs. benign": {
+      "passed": 5,
+      "total": 5
+    }
+  },
+  "failures": [
+    {
+      "dimension": "fear",
+      "category": "certainty",
+      "higher": "Officials confirm Donovian troops have crossed the border.",
+      "lower": "An unverified rumor claims Donovian troops might cross the border someday.",
+      "score_higher": 0.115,
+      "score_lower": 0.135
+    }
+  ]
+}
