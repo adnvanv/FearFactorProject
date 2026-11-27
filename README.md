@@ -16,6 +16,8 @@ A natural language parser is needed to assess short documents for their impact o
 | [v2_NLU/](./v2_NLU) | More accurate zero-shot NLI analyzer (`facebook/bart-large-mnli`). GPU recommended. |
 | [code/](./code) | Experimental notebooks (lexicon + VADER, emotion detection, Flan-T5 prompting, results analysis). |
 | [data/](./data) | MILDEC sample posts and the outputs of v1 (`*_analyzed.csv`) and v2 (`*_nlu.csv`). |
+| [evaluation/](./evaluation) | Accuracy checks for v2: public human-labeled datasets and behavior tests. |
+| [app/](./app) | Web app: React frontend + Python API for viewing results and scoring data from SQL or CSV. |
 
 ## Setup
 
@@ -53,6 +55,51 @@ Each dimension gets two columns:
 - `level_<dim>`: the same score bucketed into 1–3 (≤ −⅓ → 1, ≥ ⅓ → 3, otherwise 2).
 
 Blank text rows are skipped and left empty in the output.
+
+## How accurate is v2?
+
+Measured without hand-labeling, in [evaluation/](./evaluation) (results in `evaluation/results/`).
+
+**1. Public datasets labeled by people.** AUC = given one high and one low example, how often v2 scores the high one higher (0.5 = coin flip, 1.0 = perfect).
+
+| Factor | Dataset (human labels) | AUC |
+| --- | --- | --- |
+| Fear | GoEmotions: Reddit comments, fear/nervousness vs. neither | **0.79** |
+| Stress | Dreaddit: Reddit posts, stressed vs. not stressed | **0.84** |
+| Morale | TweetEval: tweets, optimism vs. sadness | **0.91** |
+| Trust | no public dataset (covered by the behavior tests) | — |
+
+v2 ranks texts well, but its scores run slightly positive, so 0 is not the best cutoff between "high" and "low" (the app shows the best cutoff for each factor).
+
+**2. Behavior tests.** 34 sentence pairs for this scenario where one should clearly score higher (threat vs. benign, "not", rumor vs. confirmed, resolved vs. ongoing…). v2 passes **33/34**, including 8/8 for trust. The one miss: "officials confirm troops crossed the border" did not score more fearful than "an unverified rumor says they might".
+
+```
+python evaluation/behavior_tests.py
+python evaluation/public_datasets.py --per-class 200
+```
+
+## Web app
+
+A React frontend and Python API in [app/](./app):
+
+- **Evaluation**: the accuracy results above, with charts.
+- **Analyze data**: load posts from a SQL database (SQLite, Postgres, MySQL, SQL Server via a SQLAlchemy URL) or a CSV, score them with v1 or v2, see distributions and averages over time (e.g. by `tick`), download a CSV, or save the scores back as a new table. Queries are read-only (a single SELECT, rolled back).
+
+Run it (two terminals, from the repo root):
+
+```
+pip install -r requirements.txt
+python app/demo/make_demo_db.py          # optional: SQLite copy of the MILDEC data
+uvicorn app.backend.main:app --port 8000
+```
+
+```
+cd app/frontend
+npm install
+npm run dev                              # open http://localhost:5173
+```
+
+v2 on a CPU takes about 3 seconds per post; a GPU is much faster. Set `FSMT_V2_MODEL` to use a different or local zero-shot model.
 
 
 ## Example Inputs and Outputs for V1

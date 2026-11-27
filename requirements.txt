@@ -9,3 +9,9 @@ nltk
 matplotlib
 seaborn
 jupyter
+
+# Web app (app/backend)
+fastapi
+uvicorn[standard]
+sqlalchemy
+python-multipart

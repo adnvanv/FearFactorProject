@@ -1,0 +1,34 @@
+{
+  "model": "facebook/bart-large-mnli",
+  "date": "2026-11-27",
+  "per_class": 200,
+  "results": {
+    "fear": {
+      "dataset": "GoEmotions (fear/nervousness vs. neither)",
+      "n_high": 98,
+      "n_low": 200,
+      "auc": 0.786,
+      "accuracy": 0.51,
+      "mean_score_high": 0.301,
+      "mean_score_low": 0.093
+    },
+    "stress": {
+      "dataset": "Dreaddit (stressed vs. not stressed)",
+      "n_high": 200,
+      "n_low": 200,
+      "auc": 0.841,
+      "accuracy": 0.748,
+      "mean_score_high": 0.238,
+      "mean_score_low": -0.049
+    },
+    "morale": {
+      "dataset": "TweetEval emotion (optimism vs. sadness)",
+      "n_high": 123,
+      "n_low": 200,
+      "auc": 0.905,
+      "accuracy": 0.845,
+      "mean_score_high": 0.302,
+      "mean_score_low": -0.39
+    }
+  }
+}

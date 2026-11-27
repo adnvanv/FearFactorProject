@@ -55,28 +55,25 @@ def score_to_level(score: float, threshold: float = 1 / 3) -> int:
     return 2
 
 
-def run_analysis(input_path, output_path, model=DEFAULT_MODEL, text_column="text", batch_size=32):
-    print(f"Loading data from: {input_path}")
-    df = pd.read_csv(input_path)
-    if text_column not in df.columns:
-        raise SystemExit(f"Error: column '{text_column}' not found. Columns: {list(df.columns)}")
-
-    # Skip blank / missing rows; their scores stay empty in the output.
-    texts = df[text_column].fillna("").astype(str).str.strip()
-    mask = texts != ""
-    dataset = Dataset.from_dict({"text": texts[mask].tolist()})
-    print(f"Scoring {mask.sum()} of {len(df)} rows ({(~mask).sum()} blank).")
-
+def load_pipeline(model=DEFAULT_MODEL):
+    """Create the zero-shot pipeline on the GPU if one is available."""
     device = 0 if torch.cuda.is_available() else -1
     if device == 0:
         print(f"Using GPU: {torch.cuda.get_device_name(0)}")
     else:
         print("No GPU found, running on CPU (this will be slow).")
+    return pipeline("zero-shot-classification", model=model, device=device)
 
-    pipe = pipeline("zero-shot-classification", model=model, device=device)
 
-    for dim_name, config in DIMENSIONS.items():
-        print(f"Processing {dim_name.upper()}...")
+def score_texts(pipe, texts, dimensions=None, batch_size=32, verbose=True):
+    """Score non-empty texts. Returns {dimension: [score in -1..1, ...]}."""
+    dimensions = dimensions or list(DIMENSIONS)
+    dataset = Dataset.from_dict({"text": list(texts)})
+    results = {}
+    for dim_name in dimensions:
+        config = DIMENSIONS[dim_name]
+        if verbose:
+            print(f"Processing {dim_name.upper()}...")
         low, _, high = config["labels"]
         scores = []
         for out in pipe(
@@ -88,8 +85,26 @@ def run_analysis(input_path, output_path, model=DEFAULT_MODEL, text_column="text
         ):
             probs = dict(zip(out["labels"], out["scores"]))
             scores.append(round(probs[high] - probs[low], 3))
+        results[dim_name] = scores
+    return results
 
-        df.loc[mask, f"val_{dim_name}"] = scores
+
+def run_analysis(input_path, output_path, model=DEFAULT_MODEL, text_column="text", batch_size=32):
+    print(f"Loading data from: {input_path}")
+    df = pd.read_csv(input_path)
+    if text_column not in df.columns:
+        raise SystemExit(f"Error: column '{text_column}' not found. Columns: {list(df.columns)}")
+
+    # Skip blank / missing rows; their scores stay empty in the output.
+    texts = df[text_column].fillna("").astype(str).str.strip()
+    mask = texts != ""
+    print(f"Scoring {mask.sum()} of {len(df)} rows ({(~mask).sum()} blank).")
+
+    pipe = load_pipeline(model)
+    scores = score_texts(pipe, texts[mask].tolist(), batch_size=batch_size)
+
+    for dim_name, values in scores.items():
+        df.loc[mask, f"val_{dim_name}"] = values
         df[f"level_{dim_name}"] = df[f"val_{dim_name}"].map(
             lambda s: score_to_level(s) if pd.notna(s) else pd.NA
         ).astype("Int64")

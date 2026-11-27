@@ -18,3 +18,6 @@ simulation_results.csv
 # HuggingFace/Transformers cache and local model copies
 .cache/
 code/bartLargeMnli/
+
+# Web app
+app/demo/*.db
